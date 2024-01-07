@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Probability Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            overflow: hidden;
+        }
+
+        #loveForm {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #loveResult {
+            margin-top: 20px;
+            color: #fff;
+            font-size: 1.5em;
+        }
+
+        /* Background Animation */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="backgroundCanvas"></canvas>
+
+<div id="loveForm">
+    <h2>Love Probability Checker</h2>
+    <input type="text" id="name1" placeholder="Enter Name 1" required>
+    <input type="text" id="name2" placeholder="Enter Name 2" required>
+    <button onclick="checkLoveProbability()">Check Love Probability</button>
+    <div id="loveResult"></div>
+</div>
+
+<script>
+    const canvas = document.getElementById('backgroundCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size to window size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Background Animation
+    const colors = ['#ff7e5f', '#feb47b', '#ff9a8b', '#fec9a1'];
+    const circles = [];
+
+    function createCircle() {
+        const radius = Math.random() * 20 + 5;
+        const x = Math.random() * (canvas.width - 2 * radius) + radius;
+        const y = Math.random() * (canvas.height - 2 * radius) + radius;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        circles.push({ x, y, radius, color });
+    }
+
+    function drawCircles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (const circle of circles) {
+            ctx.beginPath();
+            ctx.arc(circle.x, circle.y, circle.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = circle.color;
+            ctx.fill();
+        }
+    }
+
+    function updateCircles() {
+        for (const circle of circles) {
+            circle.y += 1;
+
+            if (circle.y - circle.radius > canvas.height) {
+                circle.y = -circle.radius;
+            }
+        }
+    }
+
+    function animateBackground() {
+        createCircle();
+        drawCircles();
+        updateCircles();
+        requestAnimationFrame(animateBackground);
+    }
+
+    animateBackground();
+
+    // Love Probability Checker
+    function checkLoveProbability() {
+        const name1 = document.getElementById('name1').value.toLowerCase();
+        const name2 = document.getElementById('name2').value.toLowerCase();
+
+        if (name1.trim() === '' || name2.trim() === '') {
+            alert('Please enter both names.');
+        } else {
+            const loveResult = document.getElementById('loveResult');
+            let randomProbability = Math.floor(Math.random() * 101);
+
+            // If names are "Sawal" and "Bidhya", set love probability to 100%
+            if ((name1 === 'sawal' && name2 === 'bidhya') || (name1 === 'bidhya' && name2 === 'sawal')) {
+                randomProbability = 100;
+            }
+
+            loveResult.innerHTML = `${name1} and ${name2}'s Love Probability is ${randomProbability}%!`;
+        }
+    }
+
+    // Resize canvas when the window is resized
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+</script>
+
+</body>
+</html>
